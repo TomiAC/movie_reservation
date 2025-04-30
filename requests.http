@@ -1,0 +1,87 @@
+###
+POST http://127.0.0.1:8000/movie
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJob2xhQGV4YW1wbGUuY29tIiwiZXhwIjoxNzQ2MDQxMDkxfQ.dqJGbbzdnq44zZ5m6WqPs-j4aDNteg8sWM8DAPOHhQA
+
+{
+    "name": "Avengers: Infinity War",
+    "description": "The Avengers and their allies must be willing to sacrifice all in an attempt to defeat the powerful Thanos before his blitz of devastation and ruin puts an end to the universe.",
+    "poster": "https://m.media-amazon.com/images/M/MV5BMjMxNjY2MDU1OV5BMl5BanBnXkFtZTgwNzY1MTUwNTM@._V1_UX477_CR0,0,477,268_AL_.jpg",
+    "duration": "149",
+    "genre": "Action, Adventure, Sci-Fi"
+}
+
+###
+POST http://127.0.0.1:8000/auth/register
+Content-Type: application/json
+
+{
+    "name": "John Doe",
+    "email": "wK7OZ@example.com",
+    "password": "password",
+    "role": "admin"
+}
+
+###
+POST http://127.0.0.1:8000/auth/register
+Content-Type: application/json
+
+{
+    "name": "John Doe",
+    "email": "hola@example.com",
+    "password": "password",
+    "role": "user"
+}
+
+###
+POST http://127.0.0.1:8000/auth/token
+Content-Type: application/x-www-form-urlencoded
+
+username=wK7OZ@example.com&password=password
+
+###
+POST http://127.0.0.1:8000/auth/token
+Content-Type: application/x-www-form-urlencoded
+
+username=hola@example.com&password=password
+
+###
+GET http://127.0.0.1:8000/movie
+
+###
+POST http://127.0.0.1:8000/auditorium
+Content-Type: application/json
+
+{
+    "number": "1",
+    "seats": 100
+}
+
+###
+POST http://127.0.0.1:8000/showtime
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ3SzdPWkBleGFtcGxlLmNvbSIsImV4cCI6MTc0NjAxODQ5NX0.ucYywsY6LLrv2OesKRwdqQs3_Ix1WrRe8Xn-n7pnfNI
+
+{
+    "start_time": "2020-01-01 12:00",
+    "movie_id": "5c18c72f-b1d6-41e8-a50a-81d4ac0bf054",
+    "auditorium_id": "b10cb261-3019-40d8-a9d3-00fb5e242799",
+    "avaible_tickets": 0,
+    "status": "active"
+}
+
+###
+GET http://127.0.0.1:8000/showtime
+
+###
+POST http://127.0.0.1:8000/reservation
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ3SzdPWkBleGFtcGxlLmNvbSIsImV4cCI6MTc0NjAyMjA5MH0.6eM9rRdJCtJXngWnsEPZ_dQHEGGBcB05TXsIhPIKVf0
+
+{
+    "amount": 1,
+    "showtime_id": "6ea0dcae-5891-4f0e-a43f-d97bb96a1bd8"
+}
+
+###
+GET http://127.0.0.1:8000/reservation
