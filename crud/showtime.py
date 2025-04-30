@@ -18,6 +18,17 @@ async def get_movie_active_showtimes(db: Session, movie_name: str, skip: int = 0
 async def get_showtime(db: Session, showtime_id: str):
     return db.query(Showtime).filter(Showtime.id == showtime_id).first()
 
+async def update_showtime(db: Session, showtime_id: str, update_data: dict) -> Showtime | None:
+    db_showtime = db.query(Showtime).filter(Showtime.id == showtime_id).first()
+    if db_showtime:
+        for key, value in update_data.items():
+            setattr(db_showtime, key, value)
+        db.add(db_showtime)
+        db.commit()
+        db.refresh(db_showtime)
+        return db_showtime
+    return None
+
 async def delete_showtime(db: Session, showtime_id: str):
     db_showtime = db.query(Showtime).filter(Showtime.id == showtime_id).first()
     db.delete(db_showtime)
@@ -29,6 +40,14 @@ async def register_reservation_showtime(db: Session, showtime_id: str, tickets: 
     result = db_showtime.avaible_tickets - tickets
     if result < 0:
         return None
+    db_showtime.avaible_tickets = result
+    db.commit()
+    db.refresh(db_showtime)
+    return db_showtime
+
+async def update_deleted_reservation(db: Session, showtime_id: str, tickets: int):
+    db_showtime = db.query(Showtime).filter(Showtime.id == showtime_id).first()
+    result = db_showtime.avaible_tickets + tickets
     db_showtime.avaible_tickets = result
     db.commit()
     db.refresh(db_showtime)

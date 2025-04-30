@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 from models import Movie
-from schemas import MovieCreate
+from schemas import MovieCreate, MovieUpdate
+from fastapi import HTTPException
 
 async def create_movie(db: Session, movie: MovieCreate):
     db_movie = Movie(**movie.model_dump(mode="json"))
@@ -17,6 +18,17 @@ async def get_movie(db: Session, movie_name: str):
 
 async def get_movie_id(db: Session, movie_id: str):
     return db.query(Movie).filter(Movie.id == movie_id).first()
+
+async def update_movie(db: Session, movie_id: str, movie: MovieUpdate):
+    db_movie = db.query(Movie).filter(Movie.id == movie_id).first()
+    if not db_movie:
+        raise HTTPException(status_code=404, detail="Movie not found")
+    for key, value in movie.model_dump(mode="json").items():
+        setattr(db_movie, key, value)
+    db.add(db_movie)
+    db.commit()
+    db.refresh(db_movie)
+    return db_movie
 
 async def delete_movie(db: Session, movie_id: str):
     db_movie = db.query(Movie).filter(Movie.id == movie_id).first()

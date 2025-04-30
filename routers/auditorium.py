@@ -1,7 +1,7 @@
 from fastapi import Depends, HTTPException, APIRouter
 from sqlalchemy.orm import Session
-from crud.auditorium import get_auditorium, create_auditorium, delete_auditorium, get_auditoriums
-from schemas import AuditoriumCreate
+from crud.auditorium import get_auditorium, create_auditorium, delete_auditorium, get_auditoriums, update_auditorium
+from schemas import AuditoriumCreate, AuditoriumUpdate
 from dependencies import get_db, has_role
 
 auditorium_router = APIRouter(prefix="/auditorium", tags=["Auditorium"])
@@ -17,6 +17,10 @@ async def create_auditorium_route(auditorium: AuditoriumCreate, db: Session = De
 @auditorium_router.get("/{auditorium_id}")
 async def get_auditorium_route(auditorium_id: str, db: Session = Depends(get_db)):
     return await get_auditorium(db, auditorium_id)
+
+@auditorium_router.put("/{auditorium_id}")
+async def update_auditorium_route(auditorium_id: str, auditorium: AuditoriumUpdate, db: Session = Depends(get_db), current_user: str = Depends(has_role("admin"))):
+    return await update_auditorium(db, auditorium_id, auditorium)
 
 @auditorium_router.delete("/{auditorium_id}")
 async def delete_auditorium_route(auditorium_id: str, db: Session = Depends(get_db), current_user: str = Depends(has_role("admin"))):
