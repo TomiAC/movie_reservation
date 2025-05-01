@@ -48,3 +48,19 @@ class Auditorium(Base):
     id = Column(String, primary_key=True, default=lambda: str(uuid4()))
     number = Column(Integer)
     seats = Column(Integer)
+    rows = Column(String)
+    columns = Column(Integer)
+
+class Seat(Base):
+    __tablename__= "seat"
+
+    id = Column(String, primary_key=True, default=lambda: str(uuid4()))
+    code = Column(String)
+    auditorium_id = Column(String, ForeignKey("auditorium.id"), nullable=False, index=True)
+
+class SeatReservation(Base):
+    __tablename__= "seats_reservation"
+    
+    id = Column(String, primary_key=True, default=lambda: str(uuid4()))
+    seat_id = Column(String, ForeignKey("seat.id"), nullable=False, index=True)
+    reservation_id = Column(String, ForeignKey("reservation.id"), nullable=False, index=True)
