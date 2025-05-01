@@ -1,6 +1,7 @@
 from fastapi import Depends, HTTPException, APIRouter
 from sqlalchemy.orm import Session
 from crud.auditorium import get_auditorium, create_auditorium, delete_auditorium, get_auditoriums, update_auditorium
+from crud.seats import create_seat
 from schemas import AuditoriumCreate, AuditoriumUpdate
 from dependencies import get_db, has_role
 
@@ -12,7 +13,14 @@ async def get_auditoriums_route(db: Session = Depends(get_db), skip: int = 0, li
 
 @auditorium_router.post("/")
 async def create_auditorium_route(auditorium: AuditoriumCreate, db: Session = Depends(get_db), current_user: str = Depends(has_role("admin"))):
-    return await create_auditorium(db, auditorium)
+    if not (auditorium.seats == auditorium.rows * auditorium.columns):
+        raise HTTPException(status_code=400, detail="Invalid seats, rows and columns")
+    new_auditorium = await create_auditorium(db, auditorium)
+    for i in range(auditorium.rows):
+        for j in range(auditorium.columns):
+            code = chr(ord('A') + i) + str(j)
+            await create_seat(db, code, new_auditorium.id)    
+    return new_auditorium.id
 
 @auditorium_router.get("/{auditorium_id}")
 async def get_auditorium_route(auditorium_id: str, db: Session = Depends(get_db)):

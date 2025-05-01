@@ -1,6 +1,6 @@
 from pydantic import BaseModel, EmailStr, HttpUrl
 from enums import UserRole
-from typing import Optional
+from typing import Optional, List
 
 class UserCreate(BaseModel):
     name: str
@@ -26,6 +26,7 @@ class MovieCreate(BaseModel):
 class ReservationCreate(BaseModel):
     amount: int
     showtime_id: str
+    seats_list: List[str]
 
 class ShowtimeCreate(BaseModel):
     start_time: str
@@ -40,6 +41,8 @@ class selectAuditorium(BaseModel):
 class AuditoriumCreate(BaseModel):
     number: int
     seats: int
+    rows: int
+    columns: int
 
 class ShowtimeUpdate(BaseModel):
     start_time: Optional[str] = None

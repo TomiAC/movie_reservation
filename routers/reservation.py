@@ -2,6 +2,8 @@ from fastapi import HTTPException, Depends, APIRouter
 from crud.reservation import get_reservations, get_reservation, create_reservation, delete_reservation, get_user_active_reservations_on_showtime, get_user_reservations
 from crud.user import get_user
 from crud.showtime import register_reservation_showtime, get_showtimes_date, update_deleted_reservation
+from crud.seats import get_seat_by_code
+from crud.seat_reservation import create_seat_reservation, delete_seat_reservation, get_seat_by_reservation_showtime
 from schemas import ReservationCreate
 from sqlalchemy.orm import Session
 from dependencies import get_db, get_current_user
@@ -15,10 +17,26 @@ async def create_reservation_route(reservation: ReservationCreate, db: Session =
     if(not user):
         HTTPException(status_code=400, detail="Invalid user")
     check_reservation = get_user_active_reservations_on_showtime(db, user.id, reservation.showtime_id)
+    if reservation.amount != len(reservation.seats_list):
+        raise HTTPException(status_code=400, detail="Amount of seats does not match reservation amount")
     if(check_reservation):
         raise HTTPException(status_code=400, detail="User already has an active reservation on this showtime")
     await register_reservation_showtime(db, reservation.showtime_id, reservation.amount)
     new_reservation = create_reservation(db, reservation, user.id)
+    
+    for seat in reservation.seats_list:
+        seat = get_seat_by_code(db, seat)
+        if(not seat):
+            delete_reservation(db, new_reservation.id, user.id)
+            raise HTTPException(status_code=400, detail="Invalid seat code")
+        
+        check_seat_availability = get_seat_by_reservation_showtime(db, new_reservation.id, reservation.showtime_id, seat.id)
+        if(check_seat_availability):
+            delete_reservation(db, new_reservation.id, user.id)
+            raise HTTPException(status_code=400, detail="Seat is already reserved")
+        
+        create_seat_reservation(db, seat.id, new_reservation.id)
+
     return new_reservation
 
 @reservation_router.get("/")
@@ -49,4 +67,5 @@ async def delete_reservation_route(reservation_id: str, db: Session = Depends(ge
     if(not user):
         HTTPException(status_code=400, detail="Invalid user")
     await update_deleted_reservation(db, reservation_id)
+    delete_seat_reservation(db, reservation_id)
     return delete_reservation(db, reservation_id, user.id)

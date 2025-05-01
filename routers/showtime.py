@@ -2,7 +2,7 @@ from schemas import ShowtimeCreate, ShowtimeUpdate
 from fastapi import Depends, APIRouter, HTTPException
 from sqlalchemy.orm import Session
 from dependencies import get_db, has_role
-from crud.showtime import create_showtime, get_showtime, get_movie_active_showtimes, delete_showtime, get_showtimes, get_showtimes_date, update_showtime
+from crud.showtime import create_showtime, get_showtime, get_movie_active_showtimes, delete_showtime, get_showtimes, get_showtimes_date, update_showtime, check_availability
 from crud.movie import get_movie_id
 from crud.auditorium import get_auditorium
 from crud.reservation import get_reservations_showtime
@@ -41,6 +41,10 @@ async def get_movie_showtimes_history(movie_name: str, db: Session = Depends(get
 @showtime_router.get("/{showtime_id}")
 async def get_showtime_route(showtime_id: str, db: Session = Depends(get_db)):
     return await get_showtime(db, showtime_id)
+
+@showtime_router.get("/availability/{showtime_id}")
+async def check_availability_route(showtime_id: str, db: Session = Depends(get_db)):
+    return await check_availability(db, showtime_id)
 
 @showtime_router.put("/{showtime_id}")
 async def update_showtime_route(showtime_id: str, showtime: ShowtimeUpdate, db: Session = Depends(get_db), current_user: str = Depends(has_role("admin"))):

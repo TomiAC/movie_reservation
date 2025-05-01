@@ -51,10 +51,13 @@ GET http://127.0.0.1:8000/movie
 ###
 POST http://127.0.0.1:8000/auditorium
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ3SzdPWkBleGFtcGxlLmNvbSIsImV4cCI6MTc0NjEwMzk4NX0.dh6BIQ1n_GPm7SSuijdM9iiCTUF-bpPN_vAEGbNXNAs
 
 {
     "number": "1",
-    "seats": 100
+    "seats": 100,
+    "rows": 10,
+    "columns": 10
 }
 
 ###
@@ -79,8 +82,12 @@ Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ3SzdPWkBleGFtcGxlLmNvbSIsImV4cCI6MTc0NjAyMjA5MH0.6eM9rRdJCtJXngWnsEPZ_dQHEGGBcB05TXsIhPIKVf0
 
 {
-    "amount": 1,
-    "showtime_id": "6ea0dcae-5891-4f0e-a43f-d97bb96a1bd8"
+    "amount": 2,
+    "showtime_id": "6ea0dcae-5891-4f0e-a43f-d97bb96a1bd8",
+    "seats_list": [
+        "A11",
+        "A12"
+    ]
 }
 
 ###
