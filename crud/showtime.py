@@ -5,7 +5,6 @@ from schemas import ShowtimeCreate
 from datetime import datetime
 
 async def create_showtime(db: Session, showtime: ShowtimeCreate, end_time: str):
-    print(showtime.model_dump())
     db_showtime = Showtime(**showtime.model_dump(), end_time=end_time)
     db.add(db_showtime)
     db.commit()
@@ -68,16 +67,15 @@ def check_availability(db: Session, showtime_id: str):
 
 def get_available_seats_for_showtime(db: Session, showtime_id: str):
     """
-    Obtiene los asientos libres para un determinado showtime.
+    Get available sets for a showtime.
     """
     # Obtener el showtime y su auditorio
     showtime = db.query(Showtime).filter(Showtime.id == showtime_id).first()
     if not showtime or not showtime.auditorium:
-        return []  # Showtime o auditorio no encontrado
+        return []
 
     auditorium_id = showtime.auditorium_id
 
-    # Subconsulta para obtener los IDs de los asientos reservados para este showtime
     reserved_seat_ids_subquery = (
         select(SeatReservation.seat_id)
         .join(Reservation, Reservation.id == SeatReservation.reservation_id)
@@ -85,7 +83,6 @@ def get_available_seats_for_showtime(db: Session, showtime_id: str):
         .scalar_subquery()
     )
 
-    # Obtener todos los asientos del auditorio que NO están en la subconsulta de asientos reservados
     available_seats = db.query(Seat).filter(
         and_(
             Seat.auditorium_id == auditorium_id,
@@ -94,3 +91,33 @@ def get_available_seats_for_showtime(db: Session, showtime_id: str):
     ).all()
 
     return available_seats
+
+def are_seats_available(db: Session, showtime_id: str, requested_seats_codes: list[str]) -> bool:
+    """
+    Check if a list of seats (codes) are available for a specific showtime.
+    """
+    showtime = db.query(Showtime).filter(Showtime.id == showtime_id).first()
+    if not showtime:
+        return False
+
+    auditorium_id = showtime.auditorium_id
+
+    requested_seats = db.query(Seat).filter(
+        and_(Seat.code.in_(requested_seats_codes), Seat.auditorium_id == auditorium_id)
+    ).all()
+
+    if len(requested_seats) != len(requested_seats_codes):
+        return False
+
+    requested_seat_ids = [seat.id for seat in requested_seats]
+
+    already_reserved = db.query(SeatReservation).join(
+        Reservation, Reservation.id == SeatReservation.reservation_id
+    ).filter(
+        and_(
+            SeatReservation.seat_id.in_(requested_seat_ids),
+            Reservation.showtime_id == showtime_id
+        )
+    ).count()
+
+    return already_reserved == 0

@@ -4,8 +4,8 @@ from schemas import ReservationCreate
 from fastapi import HTTPException
 from datetime import datetime
 
-def create_reservation(db: Session, reservation: ReservationCreate, user_id: str):
-    db_reservation = Reservation(**reservation.model_dump(), user_id=user_id)
+def create_reservation(db: Session, amount: int, showtime_id: str, user_id: str):
+    db_reservation = Reservation(amount=amount, showtime_id=showtime_id, user_id=user_id)
     db.add(db_reservation)
     db.commit()
     db.refresh(db_reservation)

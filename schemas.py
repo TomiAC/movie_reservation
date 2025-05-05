@@ -59,3 +59,22 @@ class MovieUpdate(BaseModel):
     poster: Optional[HttpUrl] = None
     duration: Optional[int] = None
     genre: Optional[str] = None
+
+class ReservationRead(BaseModel):
+    id: str
+    amount: int
+    showtime_id: str
+    user_id: str
+
+class ShowtimeRead(BaseModel):
+    id: str
+    start_time: str
+    avaible_tickets: int
+    status: str
+
+class AuditoriumRead(BaseModel):
+    id: str
+    number: int
+    seats: int
+    rows: int
+    columns: int

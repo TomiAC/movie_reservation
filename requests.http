@@ -1,7 +1,7 @@
 ###
 POST http://127.0.0.1:8000/movie
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJob2xhQGV4YW1wbGUuY29tIiwiZXhwIjoxNzQ2MDQxMDkxfQ.dqJGbbzdnq44zZ5m6WqPs-j4aDNteg8sWM8DAPOHhQA
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ3SzdPWkBleGFtcGxlLmNvbSIsImV4cCI6MTc0NjE5NjcyNH0.akEGd-OArODK9Lf_BonRyhaImJtKwQ1FXUKamAFQxEE
 
 {
     "name": "Avengers: Infinity War",
@@ -51,7 +51,7 @@ GET http://127.0.0.1:8000/movie
 ###
 POST http://127.0.0.1:8000/auditorium
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ3SzdPWkBleGFtcGxlLmNvbSIsImV4cCI6MTc0NjEwMzk4NX0.dh6BIQ1n_GPm7SSuijdM9iiCTUF-bpPN_vAEGbNXNAs
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ3SzdPWkBleGFtcGxlLmNvbSIsImV4cCI6MTc0NjE5NjcyNH0.akEGd-OArODK9Lf_BonRyhaImJtKwQ1FXUKamAFQxEE
 
 {
     "number": "1",
@@ -63,12 +63,12 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ3SzdPWkBle
 ###
 POST http://127.0.0.1:8000/showtime
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ3SzdPWkBleGFtcGxlLmNvbSIsImV4cCI6MTc0NjAxODQ5NX0.ucYywsY6LLrv2OesKRwdqQs3_Ix1WrRe8Xn-n7pnfNI
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ3SzdPWkBleGFtcGxlLmNvbSIsImV4cCI6MTc0NjE5NjcyNH0.akEGd-OArODK9Lf_BonRyhaImJtKwQ1FXUKamAFQxEE
 
 {
     "start_time": "2020-01-01 12:00",
-    "movie_id": "5c18c72f-b1d6-41e8-a50a-81d4ac0bf054",
-    "auditorium_id": "b10cb261-3019-40d8-a9d3-00fb5e242799",
+    "movie_id": "a60ed613-f7ca-46e8-95df-62f0b4d05231",
+    "auditorium_id": "84b012c8-0ef3-4fe9-835d-7b3c605315cf",
     "avaible_tickets": 0,
     "status": "active"
 }
@@ -79,14 +79,14 @@ GET http://127.0.0.1:8000/showtime
 ###
 POST http://127.0.0.1:8000/reservation
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ3SzdPWkBleGFtcGxlLmNvbSIsImV4cCI6MTc0NjAyMjA5MH0.6eM9rRdJCtJXngWnsEPZ_dQHEGGBcB05TXsIhPIKVf0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJob2xhQGV4YW1wbGUuY29tIiwiZXhwIjoxNzQ2MTk2Nzc5fQ.0btkWfa-RleqiLf7ZYnCubrt7nvOpM_J_XsuAgpPAYo
 
 {
     "amount": 2,
-    "showtime_id": "6ea0dcae-5891-4f0e-a43f-d97bb96a1bd8",
+    "showtime_id": "0dcb0130-adee-4626-972d-281253db4d0c",
     "seats_list": [
-        "A11",
-        "A12"
+        "A5",
+        "A6"
     ]
 }
 

@@ -1,13 +1,14 @@
 from fastapi import HTTPException, Depends, APIRouter
 from sqlalchemy.orm import Session
-from crud.user import get_user, create_user, check_credentials
+from crud.user import get_user, create_user, check_credentials, update_password, update_email, change_role, delete_user
 from schemas import UserCreate, UserEmail
-from dependencies import get_db, create_access_token, create_refresh_token
+from dependencies import get_db, create_access_token, create_refresh_token, get_current_user
 from fastapi.security import OAuth2PasswordRequestForm
 from typing import Annotated
 from datetime import timedelta
 import jwt
 import os
+from hashing import hash_password
 
 SECRET_KEY = os.getenv("SECRET_KEY", "clave_por_defecto_si_no_hay_env")
 ALGORITHM = os.getenv("ALGORITHM", "HS256")
@@ -17,6 +18,7 @@ auth_router = APIRouter(prefix="/auth", tags=["User"])
 
 @auth_router.post("/register")
 async def register_user_route(user: UserCreate, db: Session = Depends(get_db)):
+    user.password = hash_password(user.password)
     return await create_user(db, user)
 
 @auth_router.post("/token")
@@ -27,14 +29,13 @@ async def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()], db:S
 
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
-        data={"sub": user.email},  # 'sub' es comúnmente usado para el identificador del usuario
+        data={"sub": user.email},
         expires_delta=access_token_expires
     )
     refresh_token = create_refresh_token(
         data={"sub": user.email}
     )
     
-    # Devolver el token en el formato esperado por OAuth2
     return {
         "access_token": access_token,
         "refresh_token": refresh_token,
@@ -54,3 +55,19 @@ async def refresh_token(refresh_token: str):
         raise HTTPException(status_code=401, detail="Refresh token has expired")
     except jwt.JWTError:
         raise HTTPException(status_code=401, detail="Invalid refresh token")
+    
+@auth_router.put("/email")
+async def update_email_route(new_email: UserEmail, db: Session = Depends(get_db), current_user: str = Depends(get_current_user)):
+    return await update_email(db, new_email.email, current_user)
+
+@auth_router.put("/password")
+async def update_password_route(new_password: str, db: Session = Depends(get_db), current_user: str = Depends(get_current_user)):
+    return await update_password(db, new_password, current_user)
+
+@auth_router.put("/role")
+async def change_role_route(new_role: str, db: Session = Depends(get_db), current_user: str = Depends(get_current_user)):
+    return await change_role(db, new_role, current_user)
+
+@auth_router.delete("/user")
+async def delete_user_route(db: Session = Depends(get_db), current_user: str = Depends(get_current_user)):
+    return await delete_user(db, current_user)

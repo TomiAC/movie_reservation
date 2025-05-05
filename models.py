@@ -48,7 +48,7 @@ class Auditorium(Base):
     id = Column(String, primary_key=True, default=lambda: str(uuid4()))
     number = Column(Integer)
     seats = Column(Integer)
-    rows = Column(String)
+    rows = Column(Integer)
     columns = Column(Integer)
 
 class Seat(Base):
