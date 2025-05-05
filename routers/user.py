@@ -1,7 +1,7 @@
 from fastapi import HTTPException, Depends, APIRouter
 from sqlalchemy.orm import Session
 from crud.user import get_user, create_user, check_credentials, update_password, update_email, change_role, delete_user
-from schemas import UserCreate, UserEmail
+from schemas import UserCreate, UserEmail, UserRead, UserPassword, UserRole
 from dependencies import get_db, create_access_token, create_refresh_token, get_current_user
 from fastapi.security import OAuth2PasswordRequestForm
 from typing import Annotated
@@ -16,10 +16,13 @@ ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", 30))
 
 auth_router = APIRouter(prefix="/auth", tags=["User"])
 
-@auth_router.post("/register")
+@auth_router.post("/register", response_model=UserRead)
 async def register_user_route(user: UserCreate, db: Session = Depends(get_db)):
     user.password = hash_password(user.password)
-    return await create_user(db, user)
+    new_user = await create_user(db, user)
+    if not new_user:
+        raise HTTPException(status_code=400, detail="Email already registered")
+    return new_user
 
 @auth_router.post("/token")
 async def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()], db:Session = Depends(get_db)):
@@ -53,7 +56,7 @@ async def refresh_token(refresh_token: str):
         return {"access_token": new_access_token}
     except jwt.ExpiredSignatureError:
         raise HTTPException(status_code=401, detail="Refresh token has expired")
-    except jwt.JWTError:
+    except:
         raise HTTPException(status_code=401, detail="Invalid refresh token")
     
 @auth_router.put("/email")
@@ -61,11 +64,17 @@ async def update_email_route(new_email: UserEmail, db: Session = Depends(get_db)
     return await update_email(db, new_email.email, current_user)
 
 @auth_router.put("/password")
-async def update_password_route(new_password: str, db: Session = Depends(get_db), current_user: str = Depends(get_current_user)):
+async def update_password_route(passwords: UserPassword, db: Session = Depends(get_db), current_user: str = Depends(get_current_user)):
+    user = await check_credentials(db, current_user, passwords.old_password)
+    if not user:
+        raise HTTPException(status_code=400, detail="Incorrect password")
+    new_password = hash_password(passwords.new_password)
     return await update_password(db, new_password, current_user)
 
 @auth_router.put("/role")
-async def change_role_route(new_role: str, db: Session = Depends(get_db), current_user: str = Depends(get_current_user)):
+async def change_role_route(new_role: UserRole, db: Session = Depends(get_db), current_user: str = Depends(get_current_user)):
+    if new_role not in ["admin", "user", "guest"]:
+        raise HTTPException(status_code=400, detail="Invalid role")
     return await change_role(db, new_role, current_user)
 
 @auth_router.delete("/user")

@@ -7,10 +7,6 @@ from dependencies import get_db, has_role
 
 auditorium_router = APIRouter(prefix="/auditorium", tags=["Auditorium"])
 
-@auditorium_router.get("/")
-async def get_auditoriums_route(db: Session = Depends(get_db), skip: int = 0, limit: int = 100):
-    return await get_auditoriums(db, skip, limit)
-
 @auditorium_router.post("/", response_model=AuditoriumRead)
 async def create_auditorium_route(auditorium: AuditoriumCreate, db: Session = Depends(get_db), current_user: str = Depends(has_role("admin"))):
     if not (auditorium.seats == auditorium.rows * auditorium.columns):
@@ -26,9 +22,16 @@ async def create_auditorium_route(auditorium: AuditoriumCreate, db: Session = De
 async def get_auditorium_route(auditorium_id: str, db: Session = Depends(get_db)):
     return await get_auditorium(db, auditorium_id)
 
-@auditorium_router.put("/{auditorium_id}")
+@auditorium_router.get("/")
+async def get_auditoriums_route(db: Session = Depends(get_db), skip: int = 0, limit: int = 100):
+    return await get_auditoriums(db, skip, limit)
+
+@auditorium_router.put("/{auditorium_id}", response_model=AuditoriumRead)
 async def update_auditorium_route(auditorium_id: str, auditorium: AuditoriumUpdate, db: Session = Depends(get_db), current_user: str = Depends(has_role("admin"))):
-    return await update_auditorium(db, auditorium_id, auditorium)
+    updated_auditorium = await update_auditorium(db, auditorium_id, auditorium)
+    if updated_auditorium is None:
+        raise HTTPException(status_code=404, detail="Auditorium not found")
+    return updated_auditorium
 
 @auditorium_router.delete("/{auditorium_id}")
 async def delete_auditorium_route(auditorium_id: str, db: Session = Depends(get_db), current_user: str = Depends(has_role("admin"))):

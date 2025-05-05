@@ -72,5 +72,7 @@ async def delete_reservation_route(reservation_id: str, db: Session = Depends(ge
     if(not user):
         HTTPException(status_code=400, detail="Invalid user")
     await update_deleted_reservation(db, reservation_id)
-    delete_seat_reservation(db, reservation_id)
-    return delete_reservation(db, reservation_id, user.id)
+    deleted_reservation = delete_seat_reservation(db, reservation_id)
+    if not deleted_reservation:
+        raise HTTPException(status_code=400, detail="Invalid reservation id")
+    return {"message": "Reservation deleted"}

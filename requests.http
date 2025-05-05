@@ -18,8 +18,7 @@ Content-Type: application/json
 {
     "name": "John Doe",
     "email": "wK7OZ@example.com",
-    "password": "password",
-    "role": "admin"
+    "password": "password"
 }
 
 ###
@@ -29,8 +28,7 @@ Content-Type: application/json
 {
     "name": "John Doe",
     "email": "hola@example.com",
-    "password": "password",
-    "role": "user"
+    "password": "password"
 }
 
 ###

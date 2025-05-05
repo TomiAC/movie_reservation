@@ -1,12 +1,10 @@
 from pydantic import BaseModel, EmailStr, HttpUrl
-from enums import UserRole
 from typing import Optional, List
 
 class UserCreate(BaseModel):
     name: str
     email: EmailStr
     password: str
-    role: str
 
 class UserRead(BaseModel):
     name: str
@@ -16,12 +14,36 @@ class UserRead(BaseModel):
 class UserEmail(BaseModel):
     email: EmailStr
 
+class UserPassword(BaseModel):
+    new_password: str
+    old_password: str
+
+class UserRole(BaseModel):
+    role: str
+
+
+
 class MovieCreate(BaseModel):
     name: str
     description: str
     poster: HttpUrl
     duration: int
     genre: str
+
+class MovieRead(BaseModel):
+    id: str
+    name: str
+    description: str
+    poster: HttpUrl
+    duration: int
+    genre: str
+
+class MovieUpdate(BaseModel):
+    name: Optional[str] = None
+    description: Optional[str] = None
+    poster: Optional[HttpUrl] = None
+    duration: Optional[int] = None
+    genre: Optional[str] = None
 
 class ReservationCreate(BaseModel):
     amount: int
@@ -52,13 +74,6 @@ class ShowtimeUpdate(BaseModel):
 
 class AuditoriumUpdate(BaseModel):
     seats: Optional[int] = None
-
-class MovieUpdate(BaseModel):
-    name: Optional[str] = None
-    description: Optional[str] = None
-    poster: Optional[HttpUrl] = None
-    duration: Optional[int] = None
-    genre: Optional[str] = None
 
 class ReservationRead(BaseModel):
     id: str

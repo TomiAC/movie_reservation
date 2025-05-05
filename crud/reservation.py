@@ -1,7 +1,6 @@
 from sqlalchemy.orm import Session
 from models import Reservation
 from schemas import ReservationCreate
-from fastapi import HTTPException
 from datetime import datetime
 
 def create_reservation(db: Session, amount: int, showtime_id: str, user_id: str):
@@ -20,7 +19,7 @@ def get_reservation(db: Session, reservation_id: str):
 def delete_reservation(db: Session, reservation_id: str, user_id: str):
     db_reservation = db.query(Reservation).filter(Reservation.id == reservation_id).first()
     if db_reservation.user_id != user_id:
-        raise HTTPException(status_code=400, detail="Invalid user")
+        return None
     db.delete(db_reservation)
     db.commit()
     return db_reservation
