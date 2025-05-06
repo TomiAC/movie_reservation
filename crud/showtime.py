@@ -11,9 +11,17 @@ async def create_showtime(db: Session, showtime: ShowtimeCreate, end_time: str):
     db.refresh(db_showtime)
     return db_showtime
 
-async def get_movie_active_showtimes(db: Session, movie_name: str, skip: int = 0, limit: int = 100):
+def get_movie_active_showtimes(db: Session, movie_id: str, skip: int = 0, limit: int = 100):
+    active_showtimes = []
     actual_date = datetime.now()
-    return db.query(Showtime).filter(Showtime.start_time > actual_date, Showtime.movie_name == movie_name).offset(skip).limit(limit).all()
+    for showtime in db.query(Showtime).filter(Showtime.movie_id == movie_id).offset(skip).limit(limit).all():
+        start_time = datetime.strptime(showtime.start_time, "%Y-%m-%d %H:%M")
+        if start_time > actual_date:
+            active_showtimes.append(showtime)
+    return active_showtimes
+
+async def get_movie_history_showtimes(db: Session, movie_id: str, skip: int = 0, limit: int = 100):
+    return db.query(Showtime).filter(Showtime.movie_id == movie_id).offset(skip).limit(limit).all()
 
 async def get_showtime(db: Session, showtime_id: str):
     return db.query(Showtime).filter(Showtime.id == showtime_id).first()
@@ -23,7 +31,6 @@ async def update_showtime(db: Session, showtime_id: str, update_data: dict) -> S
     if db_showtime:
         for key, value in update_data.items():
             setattr(db_showtime, key, value)
-        db.add(db_showtime)
         db.commit()
         db.refresh(db_showtime)
         return db_showtime
@@ -71,7 +78,7 @@ def get_available_seats_for_showtime(db: Session, showtime_id: str):
     """
     # Obtener el showtime y su auditorio
     showtime = db.query(Showtime).filter(Showtime.id == showtime_id).first()
-    if not showtime or not showtime.auditorium:
+    if not showtime or not showtime.auditorium_id:
         return []
 
     auditorium_id = showtime.auditorium_id
@@ -92,25 +99,10 @@ def get_available_seats_for_showtime(db: Session, showtime_id: str):
 
     return available_seats
 
-def are_seats_available(db: Session, showtime_id: str, requested_seats_codes: list[str]) -> bool:
+def are_seats_available(db: Session, showtime_id: str, requested_seat_ids: list[int]) -> bool:
     """
-    Check if a list of seats (codes) are available for a specific showtime.
+    Check if a list of seat IDs are available for a specific showtime.
     """
-    showtime = db.query(Showtime).filter(Showtime.id == showtime_id).first()
-    if not showtime:
-        return False
-
-    auditorium_id = showtime.auditorium_id
-
-    requested_seats = db.query(Seat).filter(
-        and_(Seat.code.in_(requested_seats_codes), Seat.auditorium_id == auditorium_id)
-    ).all()
-
-    if len(requested_seats) != len(requested_seats_codes):
-        return False
-
-    requested_seat_ids = [seat.id for seat in requested_seats]
-
     already_reserved = db.query(SeatReservation).join(
         Reservation, Reservation.id == SeatReservation.reservation_id
     ).filter(

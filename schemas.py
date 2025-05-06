@@ -20,7 +20,7 @@ class UserPassword(BaseModel):
 
 class UserRole(BaseModel):
     role: str
-
+    promoted_user: str
 
 
 class MovieCreate(BaseModel):

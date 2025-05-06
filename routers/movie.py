@@ -27,6 +27,7 @@ async def update_movie_route(movie_id: str, movie: MovieUpdate, db: Session = De
     updated_movie = await update_movie(db, movie_id, movie)
     if updated_movie is None:
         raise HTTPException(status_code=404, detail="Movie not found")
+    print(updated_movie.name, updated_movie.description, updated_movie.poster, updated_movie.duration, updated_movie.genre)
     return updated_movie
 
 @movie_router.delete("/{movie_id}")

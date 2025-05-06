@@ -2,7 +2,7 @@ from fastapi import HTTPException, Depends, APIRouter
 from sqlalchemy.orm import Session
 from crud.user import get_user, create_user, check_credentials, update_password, update_email, change_role, delete_user
 from schemas import UserCreate, UserEmail, UserRead, UserPassword, UserRole
-from dependencies import get_db, create_access_token, create_refresh_token, get_current_user
+from dependencies import get_db, create_access_token, create_refresh_token, get_current_user, has_role
 from fastapi.security import OAuth2PasswordRequestForm
 from typing import Annotated
 from datetime import timedelta
@@ -72,10 +72,10 @@ async def update_password_route(passwords: UserPassword, db: Session = Depends(g
     return await update_password(db, new_password, current_user)
 
 @auth_router.put("/role")
-async def change_role_route(new_role: UserRole, db: Session = Depends(get_db), current_user: str = Depends(get_current_user)):
-    if new_role not in ["admin", "user", "guest"]:
+async def change_role_route(new_role: UserRole, db: Session = Depends(get_db), current_user: str = Depends(has_role("admin"))):
+    if new_role.role not in ["admin", "user", "guest"]:
         raise HTTPException(status_code=400, detail="Invalid role")
-    return await change_role(db, new_role, current_user)
+    return await change_role(db, new_role.role, new_role.promoted_user)
 
 @auth_router.delete("/user")
 async def delete_user_route(db: Session = Depends(get_db), current_user: str = Depends(get_current_user)):

@@ -1,6 +1,7 @@
 from database import Base
 from sqlalchemy import Column, String, Integer, ForeignKey
 from uuid import uuid4
+from sqlalchemy.orm import relationship
 
 class User(Base):
     __tablename__ = "user"
@@ -30,6 +31,8 @@ class Reservation(Base):
     amount = Column(Integer)
     user_id = Column(String, ForeignKey("user.id"), nullable=False, index=True)
     showtime_id = Column(String, ForeignKey("showtime.id"), nullable=False, index=True)
+
+    seat_reservations = relationship("SeatReservation", back_populates="reservation")
 
 class Showtime(Base):
     __tablename__ = "showtime"
@@ -64,3 +67,5 @@ class SeatReservation(Base):
     id = Column(String, primary_key=True, default=lambda: str(uuid4()))
     seat_id = Column(String, ForeignKey("seat.id"), nullable=False, index=True)
     reservation_id = Column(String, ForeignKey("reservation.id"), nullable=False, index=True)
+
+    reservation = relationship("Reservation", back_populates="seat_reservations")

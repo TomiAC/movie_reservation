@@ -9,6 +9,7 @@ from database import engine, Base, SessionLocal
 from dotenv import load_dotenv
 from hashing import hash_password
 from models import User, Reservation, Showtime, Auditorium, Movie, Seat, SeatReservation
+import os
 
 load_dotenv()
 
@@ -99,11 +100,11 @@ def populate_database():
         if movies and auditoriums and db.query(Showtime).count() < 5:
             
             showtimes_to_create = [
-                {"start_time": "18:00", "end_time": "20:00", "avaible_tickets": auditoriums[0].seats - 5, "status": "active", "movie_id": movies[0].id, "auditorium_id": auditoriums[0].id},
-                {"start_time": "20:30", "end_time": "22:30", "avaible_tickets": auditoriums[1].seats - 1, "status": "active", "movie_id": movies[1].id, "auditorium_id": auditoriums[1].id},
-                {"start_time": "15:00", "end_time": "17:15", "avaible_tickets": auditoriums[0].seats - 2, "status": "active", "movie_id": movies[2].id, "auditorium_id": auditoriums[0].id},
-                {"start_time": "22:00", "end_time": "00:00", "avaible_tickets": auditoriums[1].seats, "status": "inactive", "movie_id": movies[0].id, "auditorium_id": auditoriums[1].id},
-                {"start_time": "19:00", "end_time": "21:00", "avaible_tickets": auditoriums[0].seats, "status": "active", "movie_id": movies[1].id, "auditorium_id": auditoriums[0].id},
+                {"start_time": "2025-04-20 18:00", "end_time": "2025-04-20 20:00", "avaible_tickets": auditoriums[0].seats - 5, "status": "active", "movie_id": movies[0].id, "auditorium_id": auditoriums[0].id},
+                {"start_time": "2025-04-20 20:30", "end_time": "2025-04-20 22:15", "avaible_tickets": auditoriums[1].seats - 1, "status": "active", "movie_id": movies[1].id, "auditorium_id": auditoriums[1].id},
+                {"start_time": "2025-04-10 15:00", "end_time": "2025-04-10 17:15", "avaible_tickets": auditoriums[0].seats - 2, "status": "active", "movie_id": movies[2].id, "auditorium_id": auditoriums[0].id},
+                {"start_time": "2025-05-10 21:00", "end_time": "2025-05-10 23:00", "avaible_tickets": auditoriums[1].seats, "status": "inactive", "movie_id": movies[0].id, "auditorium_id": auditoriums[1].id},
+                {"start_time": "2025-05-20 19:00", "end_time": "2025-05-20 20:45", "avaible_tickets": auditoriums[0].seats, "status": "active", "movie_id": movies[1].id, "auditorium_id": auditoriums[0].id},
             ]
             for showtime_data in showtimes_to_create:
                 db_showtime = Showtime(**showtime_data)
@@ -161,7 +162,8 @@ def populate_database():
     finally:
         db.close()
 
-app.add_event_handler("startup", populate_database)
+if os.getenv("ENV") != "test":
+    app.add_event_handler("startup", populate_database)
 
 @app.get("/")
 def home():

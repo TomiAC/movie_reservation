@@ -1,7 +1,7 @@
 ###
 POST http://127.0.0.1:8000/movie
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ3SzdPWkBleGFtcGxlLmNvbSIsImV4cCI6MTc0NjE5NjcyNH0.akEGd-OArODK9Lf_BonRyhaImJtKwQ1FXUKamAFQxEE
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBleGFtcGxlLmNvbSIsImV4cCI6MTc0NjU2NDQ5NH0.4-yAXsN_g0L2sUIqcjJgv7117-1cOtLWO6OOo3N38Bw
 
 {
     "name": "Avengers: Infinity War",
@@ -9,6 +9,15 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ3SzdPWkBle
     "poster": "https://m.media-amazon.com/images/M/MV5BMjMxNjY2MDU1OV5BMl5BanBnXkFtZTgwNzY1MTUwNTM@._V1_UX477_CR0,0,477,268_AL_.jpg",
     "duration": "149",
     "genre": "Action, Adventure, Sci-Fi"
+}
+
+###
+PUT http://127.0.0.1:8000/movie/391813cb-bfe6-4a18-9d37-d46e6875c794
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBleGFtcGxlLmNvbSIsImV4cCI6MTc0NjU0MzM0Mn0.BfKuWPgf4f9dru43MQ4WydnIVNkEmoaU70ryEmC8p48
+
+{
+    "name": "Avengers: Infinity War Updated"
 }
 
 ###
@@ -44,12 +53,18 @@ Content-Type: application/x-www-form-urlencoded
 username=hola@example.com&password=password
 
 ###
+POST http://127.0.0.1:8000/auth/token
+Content-Type: application/x-www-form-urlencoded
+
+username=admin@example.com&password=admin123
+
+###
 GET http://127.0.0.1:8000/movie
 
 ###
 POST http://127.0.0.1:8000/auditorium
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ3SzdPWkBleGFtcGxlLmNvbSIsImV4cCI6MTc0NjE5NjcyNH0.akEGd-OArODK9Lf_BonRyhaImJtKwQ1FXUKamAFQxEE
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBleGFtcGxlLmNvbSIsImV4cCI6MTc0NjU2NDQ5NH0.4-yAXsN_g0L2sUIqcjJgv7117-1cOtLWO6OOo3N38Bw
 
 {
     "number": "1",
@@ -61,27 +76,28 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ3SzdPWkBle
 ###
 POST http://127.0.0.1:8000/showtime
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ3SzdPWkBleGFtcGxlLmNvbSIsImV4cCI6MTc0NjE5NjcyNH0.akEGd-OArODK9Lf_BonRyhaImJtKwQ1FXUKamAFQxEE
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBleGFtcGxlLmNvbSIsImV4cCI6MTc0NjU2NDQ5NH0.4-yAXsN_g0L2sUIqcjJgv7117-1cOtLWO6OOo3N38Bw
 
 {
-    "start_time": "2020-01-01 12:00",
-    "movie_id": "a60ed613-f7ca-46e8-95df-62f0b4d05231",
-    "auditorium_id": "84b012c8-0ef3-4fe9-835d-7b3c605315cf",
+    "start_time": "2024-05-20 12:00",
+    "movie_id": "2469b1ec-436f-41f1-a587-2d09c5c94b12",
+    "auditorium_id": "65f4230b-b3d3-4412-850e-b45ffd789411",
     "avaible_tickets": 0,
     "status": "active"
 }
 
 ###
-GET http://127.0.0.1:8000/showtime
+GET http://127.0.0.1:8000/showtime/b68956e7-e886-4a1a-925a-758a885e28e8
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBleGFtcGxlLmNvbSIsImV4cCI6MTc0NjU2NDQ5NH0.4-yAXsN_g0L2sUIqcjJgv7117-1cOtLWO6OOo3N38Bw
 
 ###
 POST http://127.0.0.1:8000/reservation
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJob2xhQGV4YW1wbGUuY29tIiwiZXhwIjoxNzQ2MTk2Nzc5fQ.0btkWfa-RleqiLf7ZYnCubrt7nvOpM_J_XsuAgpPAYo
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ3SzdPWkBleGFtcGxlLmNvbSIsImV4cCI6MTc0NjU1ODg5OX0.Kjax4UplX23_oYQuk_pVFdHcIelCKWFaU3KJAebvntQ
 
 {
     "amount": 2,
-    "showtime_id": "0dcb0130-adee-4626-972d-281253db4d0c",
+    "showtime_id": "bdc861a3-000f-4e95-ba2c-57e6bdc26837",
     "seats_list": [
         "A5",
         "A6"

@@ -22,9 +22,8 @@ async def update_movie(db: Session, movie_id: str, movie: MovieUpdate):
     db_movie = db.query(Movie).filter(Movie.id == movie_id).first()
     if not db_movie:
         return None
-    for key, value in movie.model_dump(mode="json").items():
+    for key, value in movie.model_dump(exclude_unset=True, mode="json").items():
         setattr(db_movie, key, value)
-    db.add(db_movie)
     db.commit()
     db.refresh(db_movie)
     return db_movie
