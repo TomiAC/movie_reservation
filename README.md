@@ -22,19 +22,19 @@ API REST desarrollada con **FastAPI** para gestionar un sistema de reservas de f
 
 1. Clona este repositorio:
 
-```
+`
 git clone https://github.com/tu_usuario/movie_reservation.git
-cd movie_reservation```
+cd movie_reservation`
 
 2. Crea y activa un entorno virtual:
-```python -m venv venv
-source venv/bin/activate   # En Windows: venv\Scripts\activate```
+`python -m venv venv
+source venv/bin/activate   # En Windows: venv\Scripts\activate`
 
 3. Instala las dependencias:
-```pip install -r requirements.txt```
+`pip install -r requirements.txt`
 
 4. Ejecuta la aplicación:
-```uvicorn main:app --reload```
+`uvicorn main:app --reload`
 
 # 📚 Documentación interactiva
 
@@ -44,7 +44,7 @@ Swagger UI: http://127.0.0.1:8000/docs
 # 🧪 Ejecutar tests
 
 El proyecto incluye pruebas automatizadas con pytest. Para ejecutarlas, usá el siguiente comando:
-```pytest```
+`pytest`
 
 # Contacto
   www.linkedin.com/in/ta-cardozo
